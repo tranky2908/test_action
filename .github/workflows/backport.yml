@@ -14,7 +14,7 @@ jobs:
         uses: sorenlouv/backport-github-action@v9.5.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-	  auto_backport_label_prefix: "backport-to:"
-          auto_merge: false
-          auto_assign: true
-          auto_label: true
+          auto_backport_label_prefix: "backport-to:"  # Tiền tố label
+          auto_merge: false                         # Không tự động merge
+          auto_assign: true                         # Tự động assign reviewer
+          auto_label: true                          # Tự động thêm label
