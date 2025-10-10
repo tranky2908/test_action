@@ -8,6 +8,9 @@ jobs:
   backport:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    permissions:
+    contents: write  # Cho phép push mã vào repository
+    pull-requests: write  # Cho phép tạo và chỉnh sửa pull requests
 
     steps:
       - name: Run backport action
