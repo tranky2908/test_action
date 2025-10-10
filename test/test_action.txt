@@ -27,3 +27,5 @@ Khi PR merge và có label backport-to:staging, bot tự tạo PR sang staging.
 
 Khi PR merge và có label backport-to:prod, bot tự tạo PR sang prod (hotfix trực tiếp).
 Khi PR merge và có label backport-to:prod, bot tự tạo PR sang prod (hotfix trực tiếp).
+Khi PR merge và có label backport-to:prod, bot tự tạo PR sang prod (hotfix trực tiếp).
+Khi PR merge và có label backport-to:prod, bot tự tạo PR sang prod (hotfix trực tiếp).
