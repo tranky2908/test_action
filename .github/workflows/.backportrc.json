@@ -1,0 +1,11 @@
+{
+  "repoOwner": "tranky2908",
+  "repoName": "test_action",
+  "branches": [
+    { "name": "prod", "label": "backport-to:prod" },
+    { "name": "staging", "label": "backport-to:staging" }
+  ],
+  "autoMerge": false,
+  "autoAssign": true,
+  "autoLabel": true
+}

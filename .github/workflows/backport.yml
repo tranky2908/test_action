@@ -1,0 +1,19 @@
+name: Auto Backport PRs
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  backport:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run backport action
+        uses: sqren/backport-github-action@v13.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          auto_merge: false
+          auto_assign: true
+          auto_label: true
