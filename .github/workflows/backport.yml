@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Checkout mã nguồn từ repository để làm việc
+        uses: actions/checkout@v2
 
       - name: Set up Git for pushing
         run: |
@@ -24,26 +24,27 @@ jobs:
 
       - name: Create a new branch from staging
         run: |
-          # Fetch latest updates
+          # Fetch latest changes from remote
           git fetch origin
-          # Checkout to staging branch
-          git checkout staging
-          git pull origin staging
-          # Create a new branch from staging, using PR number to name the branch
+          git checkout staging  # Checkout nhánh staging từ remote
+          git pull origin staging  # Đồng bộ nhánh staging với remote
           NEW_BRANCH="backport-to-staging-${{ github.event.pull_request.number }}"
-          git checkout -b $NEW_BRANCH
-          git push origin $NEW_BRANCH  # Push new branch to remote
+          git checkout -b $NEW_BRANCH  # Tạo nhánh mới từ staging
+          git push --set-upstream origin $NEW_BRANCH  # Đặt upstream cho nhánh và push lên remote
 
-      - name: Cherry-pick commits from merged PR to the new branch
+      - name: Cherry-pick commits from merged PR with 'theirs' strategy
         run: |
-          # Cherry-pick commits from the merged PR into the new branch
           COMMIT_SHA="${{ github.event.pull_request.merge_commit_sha }}"
-          git cherry-pick -X theirs $COMMIT_SHA  # Apply commit from PR to the new branch
-          git push origin $NEW_BRANCH  # Push the changes to the new branch
+          git cherry-pick -X theirs $COMMIT_SHA  # Tự động giữ thay đổi từ `main` khi có xung đột
+          git push origin $NEW_BRANCH  # Push các thay đổi vào nhánh con
+
+      - name: Push the branch with upstream
+        run: |
+          # Đảm bảo upstream branch được thiết lập cho nhánh con và push
+          git push --set-upstream origin $NEW_BRANCH  # Thiết lập upstream branch và push lên remote
 
       - name: Create a Pull Request to staging
         run: |
-          # Create PR to staging from the newly created branch
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{"title": "Backport PR #${{ github.event.pull_request.number }} to staging", "head": "$NEW_BRANCH", "base": "staging"}' \
