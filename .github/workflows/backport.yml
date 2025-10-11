@@ -24,12 +24,13 @@ jobs:
 
       - name: Create a new branch from staging
         run: |
+          # Fetch latest changes from remote
           git fetch origin
           git checkout staging  # Checkout nhánh staging từ remote
           git pull origin staging  # Đồng bộ nhánh staging với remote
           NEW_BRANCH="backport-to-staging-${{ github.event.pull_request.number }}"
           git checkout -b $NEW_BRANCH  # Tạo nhánh mới từ staging
-          git push origin $NEW_BRANCH  # Push nhánh con lên remote
+          git push --set-upstream origin $NEW_BRANCH  # Đặt upstream cho nhánh và push lên remote
 
       - name: Cherry-pick commits from merged PR with 'theirs' strategy
         run: |
@@ -39,7 +40,7 @@ jobs:
 
       - name: Push the branch with upstream
         run: |
-          # Đặt upstream cho nhánh con mới tạo
+          # Đảm bảo upstream branch được thiết lập cho nhánh con và push
           git push --set-upstream origin $NEW_BRANCH  # Thiết lập upstream branch và push lên remote
 
       - name: Create a Pull Request to staging
