@@ -2,11 +2,11 @@ name: Auto Backport PRs
 
 on:
   pull_request:
-    types: [closed]  # Kích hoạt khi PR được đóng
+    types: [closed]  # Kích hoạt khi PR được đóng (hoặc merge)
 
 jobs:
   backport:
-    if: github.event.pull_request.merged == true  # Kiểm tra nếu PR đã được merged
+    if: github.event.pull_request.merged == true  # Chỉ thực thi nếu PR đã được merged
     runs-on: ubuntu-latest  # Chạy trên môi trường Ubuntu
 
     permissions:
@@ -20,9 +20,16 @@ jobs:
       - name: Run backport action
         uses: sorenlouv/backport-github-action@v9.5.1  # Sử dụng backport action
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng Personal Access Token (PAT)
+          github_token: ${{ secrets.MY_GITHUB_PAT }}  # Sử dụng Personal Access Token (PAT)
           auto_backport_label_prefix: "backport-to:"  # Tiền tố label (ví dụ: "backport-to:staging")
           auto_merge: false  # Không tự động merge PR
           auto_assign: true  # Tự động assign reviewer
           auto_label: true  # Tự động thêm label vào PR
 
+      - name: Info log
+        if: ${{ success() }}
+        run: cat ~/.backport/backport.info.log  # Hiển thị log nếu action thành công
+
+      - name: Debug log
+        if: ${{ failure() }}
+        run: cat ~/.backport/backport.debug.log  # Hiển thị log debug nếu có lỗi
