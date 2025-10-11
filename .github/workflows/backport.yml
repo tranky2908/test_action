@@ -6,7 +6,9 @@ on:
 
 jobs:
   backport:
-    if: github.event.pull_request.merged == true  # Chỉ thực thi nếu PR đã được merged vào main
+    if: |
+      github.event.pull_request.merged == true &&  # Chỉ thực thi nếu PR đã được merged
+      github.event.pull_request.base.ref == 'main'  # Kiểm tra nếu nhánh đích là `main`
     runs-on: ubuntu-latest  # Chạy trên môi trường Ubuntu
 
     permissions:
@@ -24,7 +26,6 @@ jobs:
 
       - name: Create a new branch from staging
         run: |
-          # Fetch latest changes from remote
           git fetch origin
           git checkout staging  # Checkout nhánh staging từ remote
           git pull origin staging  # Đồng bộ nhánh staging với remote
@@ -40,12 +41,12 @@ jobs:
 
       - name: Push the branch with upstream
         run: |
-          # Đảm bảo upstream branch được thiết lập cho nhánh con và push
           git push --set-upstream origin $NEW_BRANCH  # Thiết lập upstream branch và push lên remote
 
       - name: Create a Pull Request to staging
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"title": "Backport PR #${{ github.event.pull_request.number }} to staging", "head": "$NEW_BRANCH", "base": "staging"}' \
+            -d '{"title": "Backport PR #${{ github.event.pull_request.number }} to staging", "head": "$NEW_BRANCH", "base": "staging", "draft": false}' \
             https://api.github.com/repos/${{ github.repository }}/pulls
+``
