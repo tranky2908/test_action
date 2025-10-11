@@ -17,11 +17,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2  # Checkout mã nguồn từ repository để làm việc
 
+      - name: Set up Git for pushing
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Run backport action
         uses: sorenlouv/backport-github-action@v9.5.1  # Sử dụng backport action
         with:
-          github_token: ${{ secrets.MY_GITHUB_PAT }}  # Sử dụng Personal Access Token (PAT)
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng Personal Access Token (PAT)
           auto_backport_label_prefix: "backport-to:"  # Tiền tố label (ví dụ: "backport-to:staging")
           auto_merge: false  # Không tự động merge PR
           auto_assign: true  # Tự động assign reviewer
           auto_label: true  # Tự động thêm label vào PR
+
+      - name: Create PR to staging (if not already created)
+        run: |
+          # Kiểm tra xem PR đã được tạo chưa
+          git fetch origin
+          git checkout -b backport-to-staging
+          git push origin backport-to-staging
+          
+          # Tạo Pull Request vào nhánh staging
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"title": "Backport Changes to Staging", "head": "backport-to-staging", "base": "staging"}' \
+            https://api.github.com/repos/${{ github.repository }}/pulls
+          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
