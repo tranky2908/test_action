@@ -25,11 +25,3 @@ jobs:
           auto_merge: false  # Không tự động merge PR
           auto_assign: true  # Tự động assign reviewer
           auto_label: true  # Tự động thêm label vào PR
-
-      - name: Info log
-        if: ${{ success() }}
-        run: cat ~/.backport/backport.info.log  # Hiển thị log nếu action thành công
-
-      - name: Debug log
-        if: ${{ failure() }}
-        run: cat ~/.backport/backport.debug.log  # Hiển thị log debug nếu có lỗi
