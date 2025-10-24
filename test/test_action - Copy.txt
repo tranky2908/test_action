@@ -21,7 +21,7 @@ Khi PR merge và có label backport-to:prod, bot tự tạo PR sang prod (hotfix
 sorenlouv/backport-github-action@v9.5.1sorenlouv/backport-github-action@v9.5.1sorenlouv/backport-github-action@v9.5.1sorenlouv/backport-github-action@v9.5.1
 
 
-Bạn chỉ cần 2 nhánh cố định là staging và prod.
+Bạn chỉ cần 2 nhánh cố định là staging và prod. sửa luôn đây đi
 
 Khi PR merge và có label backport-to:staging, bot tự tạo PR sang staging.
 fdsdfs
